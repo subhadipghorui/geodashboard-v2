@@ -49,7 +49,7 @@ class Layer extends Model
     {
         return [
             'g_groups' => 'array',
-            'g_meta' => 'array',
+            'g_meta' => 'collection',
             'g_layer_type' => LayerTypeEnum::class,
             'g_feature_type' => FeatureTypeEnum::class,
         ];

@@ -34,7 +34,7 @@ class MapResource extends Resource
                         ->disabled()
                         ->maxLength(255),
 
-                    Forms\Components\Repeater::make('g_meta')
+                    Forms\Components\Repeater::make('g_layers')
                         ->schema([
                             Forms\Components\Grid::make([
                                 'default' => 1,

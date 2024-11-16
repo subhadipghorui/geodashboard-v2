@@ -24,6 +24,7 @@ class Map extends Model
         'g_slug',
         'g_groups',
         'g_meta',
+        'g_layers',
         'status',
         'created_by',
         'updated_by'
@@ -38,7 +39,8 @@ class Map extends Model
     {
         return [
             'g_groups' => 'array',
-            'g_meta' => 'collection'
+            'g_meta' => 'collection',
+            'g_layers' => 'array',
         ];
     }
 
