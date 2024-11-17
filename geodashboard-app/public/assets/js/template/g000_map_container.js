@@ -10,12 +10,6 @@ const appConfig = {};
 
 const map_slug = window.location.pathname.split("/").slice(-1)[0];
 
-const MAP_CONFIG = {
-    lat: 0,
-    lng: 0,
-    zoom: 2,
-};
-
 const MAPBOX_TOKEN =
     "pk.eyJ1Ijoic3ViaGFkaXBnaG9ydWkiLCJhIjoiY2xzem5zNGZkMG4xcjJybzVoeTJtMTExaSJ9.eD6JCnaHoU2mKpXiRnP3cg";
 mapboxgl.accessToken = MAPBOX_TOKEN;
@@ -33,22 +27,6 @@ appConfig.mapObj = new mapboxgl.Map({
     "bearing": 0,
     "projection": "mercator"
   });
-// Disable map rotation using right click + drag
-appConfig.mapObj.dragRotate.disable();
-
-// Disable map rotation using touch rotation gesture
-appConfig.mapObj.touchZoomRotate.disableRotation();
-
-appConfig.mapObj.addControl(
-    new mapboxgl.ScaleControl({
-        maxWidth: 80,
-        unit: "meter",
-    })
-);
-appConfig.mapObj.addControl(
-    new mapboxgl.NavigationControl(),
-    "bottom-right"
-);
 
 // Fetch All Layers
 const fetchMapConfig = async () => {
@@ -87,6 +65,23 @@ const initMap = async () => {
     appConfig.mapConfig = mapConfigData;
     appConfig.layersArray = [];
     appConfig.mapConfig.g_layers.forEach((ele, i) => appConfig.layersArray.push(ele));
+
+    // Disable map rotation using right click + drag
+    appConfig.mapObj.dragRotate.disable();
+
+    // Disable map rotation using touch rotation gesture
+    appConfig.mapObj.touchZoomRotate.disableRotation();
+
+    appConfig.mapObj.addControl(
+        new mapboxgl.ScaleControl({
+            maxWidth: 80,
+            unit: "meter",
+        })
+    );
+    appConfig.mapObj.addControl(
+        new mapboxgl.NavigationControl(),
+        "bottom-right"
+    );
 
     resetMapCenter();
     
