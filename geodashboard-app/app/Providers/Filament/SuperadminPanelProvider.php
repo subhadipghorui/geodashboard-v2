@@ -56,7 +56,7 @@ class SuperadminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugins([
-                FilamentSpatieRolesPermissionsPlugin::make(),
+                // FilamentSpatieRolesPermissionsPlugin::make(),
                 \FilipFonal\FilamentLogManager\FilamentLogManager::make(),
             ]);
     }

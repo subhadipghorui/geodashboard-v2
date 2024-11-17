@@ -20,6 +20,10 @@ class MapResource extends Resource
 {
     protected static ?string $model = Map::class;
 
+    protected static ?int $navigationSort = 2;
+
+    protected static ?string $navigationGroup = 'Dashboard';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -33,7 +37,9 @@ class MapResource extends Resource
                     Forms\Components\TextInput::make('g_slug')
                         ->disabled()
                         ->maxLength(255),
-
+                    Forms\Components\TextInput::make('g_template')
+                        ->default('template_mapbox01')
+                        ->maxLength(255),
                     Forms\Components\Repeater::make('g_layers')
                         ->schema([
                             Forms\Components\Grid::make([
@@ -48,7 +54,7 @@ class MapResource extends Resource
 
                             Forms\Components\Repeater::make('layers')
                                 ->schema([
-                                    Forms\Components\Select::make('layer')
+                                    Forms\Components\Select::make('id')
                                         ->options(fn() => Layer::pluck('g_label as name', 'id'))
                                         ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                         ->required(),
@@ -64,7 +70,8 @@ class MapResource extends Resource
                         ->addActionLabel("Add Group")
                         ->columnSpan('full'),
 
-                    
+                    \InvadersXX\FilamentJsoneditor\Forms\JSONEditor::make('g_meta')
+                        ->columnSpanFull(),
 
                     Forms\Components\Toggle::make('status')
                         ->required()
@@ -81,15 +88,14 @@ class MapResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('g_label')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('g_slug')
+                Tables\Columns\TextColumn::make('g_template')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\IconColumn::make('status')
+                    ->boolean()->sortable(),
                 Tables\Columns\TextColumn::make('created_by')
-                    ->searchable(),
+                    ->searchable()->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_by')
-                    ->searchable(),
+                    ->searchable()->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -20,16 +20,11 @@ return new class extends Migration
             $table->string('g_layer_type')->nullable();
             $table->string('g_layer_url')->nullable();
             $table->string('g_feature_type')->nullable();
+            $table->json('g_layer_config')->nullable();
             $table->json('g_meta')->nullable();
-            $table->boolean('g_feature_label_visibility')->nullable();
-            $table->text('g_feature_label_value')->nullable();
-            $table->boolean('g_feature_hover_enabled')->nullable();
-            $table->text('g_feature_hover_value')->nullable();
-            $table->boolean('g_feature_click_enabled')->nullable();
-            $table->text('g_feature_click_value')->nullable();
             $table->tinyInteger('status')->default(1);
-            $table->string('created_by');
-            $table->string('updated_by');
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
         });
     }

@@ -17,11 +17,12 @@ return new class extends Migration
             $table->string('g_label');
             $table->string('g_slug');
             $table->json('g_groups')->nullable();
-            $table->json('g_meta')->nullable();
+            $table->string('g_template');
             $table->json('g_layers')->nullable();
+            $table->json('g_meta')->nullable();
             $table->tinyInteger('status')->default(1);
-            $table->string('created_by');
-            $table->string('updated_by');
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
         });
     }

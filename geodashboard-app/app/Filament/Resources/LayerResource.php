@@ -21,6 +21,11 @@ class LayerResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $navigationGroup = 'Dashboard';
+
+
     public static function form(Form $form): Form
     {
         return $form
@@ -38,45 +43,12 @@ class LayerResource extends Resource
                     Forms\Components\Select::make('g_feature_type')
                         ->options(FeatureTypeEnum::class)
                         ->required(),
-                    Forms\Components\Textarea::make('g_layer_url')
-                        ->required(255)
+                    \InvadersXX\FilamentJsoneditor\Forms\JSONEditor::make('g_layer_config')
+                        ->height(600)
+                        ->required()
                         ->columnSpanFull(),
-                    Forms\Components\Repeater::make('g_meta')
-                        ->schema([
-                            Forms\Components\Select::make('id')
-                                ->options([
-                                    'mapbox_styles' => 'mapbox_styles',
-                                    'mapbox_min_zoom' => 'mapbox_min_zoom',
-                                    'mapbox_max_zoom' => 'mapbox_max_zoom',
-                                ])
-                                ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                ->label('Attribute')->required()->columnSpan(1),
-                            \InvadersXX\FilamentJsoneditor\Forms\JSONEditor::make('value')
-                                ->modes(['code', 'form', 'text', 'tree', 'view', 'preview'])
-                                ->required()
-                                ->columnSpan(3)
-                        ])
-                        ->itemLabel("Add Attribute")
-                        ->addActionLabel("Add Attribute")
-                        ->minItems(1)->columns(4)->columnSpanFull(),
-                    Forms\Components\Toggle::make('g_feature_label_visibility')
-                        ->live()
-                        ->default(0),
-                    Forms\Components\Textarea::make('g_feature_label_value')
-                        ->live()
-                        ->requiredIf('g_feature_label_visibility', 1),
-                    Forms\Components\Toggle::make('g_feature_hover_enabled')
-                        ->live()
-                        ->default(0),
-                    Forms\Components\Textarea::make('g_feature_hover_value')
-                        ->live()
-                        ->requiredIf('g_feature_hover_enabled', 1),
-                    Forms\Components\Toggle::make('g_feature_click_enabled')
-                        ->live()
-                        ->default(0),
-                    Forms\Components\Textarea::make('g_feature_click_value')
-                        ->live()
-                        ->requiredIf('g_feature_click_enabled', 1),
+                    \InvadersXX\FilamentJsoneditor\Forms\JSONEditor::make('g_meta')
+                        ->columnSpanFull(),
                     Forms\Components\Toggle::make('status')
                         ->required()
                         ->default(1),
@@ -96,23 +68,14 @@ class LayerResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('g_layer_type')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('g_layer_url')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('g_feature_type')
                     ->searchable(),
-                Tables\Columns\IconColumn::make('g_feature_label_visibility')
-                    ->boolean(),
-                Tables\Columns\IconColumn::make('g_feature_hover_enabled')
-                    ->boolean(),
-                Tables\Columns\IconColumn::make('g_feature_click_enabled')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('status')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\IconColumn::make('status')
+                    ->boolean()->sortable(),
                 Tables\Columns\TextColumn::make('created_by')
-                    ->searchable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_by')
-                    ->searchable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

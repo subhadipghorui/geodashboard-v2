@@ -23,6 +23,7 @@ class Map extends Model
         'g_label',
         'g_slug',
         'g_groups',
+        'g_template',
         'g_meta',
         'g_layers',
         'status',
@@ -53,5 +54,8 @@ class Map extends Model
         static::updating(function ($model) {
             $model->g_slug = (string) Str::slug($model->g_label);
         });
+    }
+    public function setGMetaAttribute($value){
+        $this->attributes['g_meta'] =  collect(json_decode($value));
     }
 }

@@ -25,7 +25,7 @@ class EditMap extends EditRecord
             if(!empty($item['layers'])){
                 $item['layers'] = array_map(function($layer){
                     $res = [];
-                    $res = Layer::findOrFail($layer["layer"])->toArray();
+                    $res = Layer::findOrFail($layer["id"])->toArray();
                     $res["checked"] = $layer["checked"];
                     $res["status"] = $layer["status"];
                     return $res;

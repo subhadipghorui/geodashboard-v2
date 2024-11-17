@@ -26,15 +26,9 @@ class Layer extends Model
         'g_slug',
         'g_groups',
         'g_layer_type',
-        'g_layer_url',
         'g_feature_type',
+        'g_layer_config',
         'g_meta',
-        'g_feature_label_visibility',
-        'g_feature_label_value',
-        'g_feature_hover_enabled',
-        'g_feature_hover_value',
-        'g_feature_click_enabled',
-        'g_feature_click_value',
         'status',
         'created_by',
         'updated_by'
@@ -50,6 +44,7 @@ class Layer extends Model
         return [
             'g_groups' => 'array',
             'g_meta' => 'collection',
+            'g_layer_config' => 'collection',
             'g_layer_type' => LayerTypeEnum::class,
             'g_feature_type' => FeatureTypeEnum::class,
         ];
@@ -64,5 +59,12 @@ class Layer extends Model
         static::updating(function ($model) {
             $model->g_slug = (string) Str::slug($model->g_label);
         });
+    }
+
+    public function setGLayerConfigAttribute($value){
+        $this->attributes['g_layer_config'] =  collect(json_decode($value));
+    }
+    public function setGMetaAttribute($value){
+        $this->attributes['g_meta'] =  collect(json_decode($value));
     }
 }
