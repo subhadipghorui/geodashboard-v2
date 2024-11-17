@@ -12,6 +12,8 @@ class CreateLayer extends CreateRecord
     
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        $data['g_meta'] = json_decode($data['g_meta']);
+        $data['g_layer_config'] = json_decode($data['g_layer_config']);
         return $data;
     }
 }

@@ -19,6 +19,8 @@ class EditLayer extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        $data['g_meta'] = gettype($data['g_meta']) == 'array' ? $data['g_meta'] : json_decode($data['g_meta']);
+        $data['g_layer_config'] = gettype($data['g_layer_config']) == 'array' ? $data['g_layer_config'] : json_decode($data['g_layer_config']);
         return $data;
     }
 }

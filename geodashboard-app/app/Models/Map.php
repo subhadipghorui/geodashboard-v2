@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Traits\LogActionBy;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -55,7 +57,7 @@ class Map extends Model
             $model->g_slug = (string) Str::slug($model->g_label);
         });
     }
-    public function setGMetaAttribute($value){
-        $this->attributes['g_meta'] =  collect(json_decode($value));
-    }
+    // public function setGMetaAttribute($value){
+    //     $this->attributes['g_meta'] =  gettype($value) == "string" ? collect(json_decode($value)) : $value;
+    // }
 }

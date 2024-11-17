@@ -31,6 +31,8 @@ class LayerResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make([
+                    Forms\Components\TextInput::make('g_uuid')
+                    ->readOnly(),
                     Forms\Components\TextInput::make('g_label')
                         ->required()
                         ->maxLength(255),
@@ -61,6 +63,7 @@ class LayerResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('g_uuid')
+                    ->copyable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('g_label')
                     ->searchable(),

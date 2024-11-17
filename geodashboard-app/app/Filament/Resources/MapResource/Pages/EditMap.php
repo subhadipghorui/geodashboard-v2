@@ -33,7 +33,7 @@ class EditMap extends EditRecord
             }
             return $item;
         }, $data['g_layers']);
-
+        $data['g_meta'] = gettype($data['g_meta']) == 'array' ? $data['g_meta'] : json_decode($data['g_meta']);
         return $data;
     }
 }

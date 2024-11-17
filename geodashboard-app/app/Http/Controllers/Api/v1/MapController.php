@@ -18,7 +18,7 @@ class MapController extends Controller
         ]);
     }
     public function view($id){
-        $data["map"] = Map::findOrFail($id);
+        $data["map"] = Map::where('g_uuid', $id)->first();
         return response()->json([
             "error" => false,
             "message" => "Fetched map details.",

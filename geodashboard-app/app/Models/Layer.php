@@ -61,10 +61,4 @@ class Layer extends Model
         });
     }
 
-    public function setGLayerConfigAttribute($value){
-        $this->attributes['g_layer_config'] =  collect(json_decode($value));
-    }
-    public function setGMetaAttribute($value){
-        $this->attributes['g_meta'] =  collect(json_decode($value));
-    }
 }
