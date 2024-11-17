@@ -54,7 +54,7 @@
             <div class="container-fluid">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     @if(env('APP_LOGO'))
-                    <img src="{{asset(env('APP_LOGO', ''))}}" width="30" height="30" class="d-inline-block align-top" alt="">
+                    <img src="{{asset(env('APP_LOGO', ''))}}" width="30" height="auto" class="d-inline-block align-top" alt="">
                     @endif
                     {{ config('app.name', 'Laravel') }}
                 </a>

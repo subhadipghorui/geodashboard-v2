@@ -5,7 +5,6 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
     <style>
         #map {
-            width: 100vw;
             height: 100%;
             z-index: 1;
         }
