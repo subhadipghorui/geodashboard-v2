@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\FeatureTypeEnum;
 use App\LayerTypeEnum;
+use App\MapTypeEnum;
 use App\Traits\LogActionBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,6 +28,7 @@ class Layer extends Model
         'g_groups',
         'g_layer_type',
         'g_feature_type',
+        'g_map_type',
         'g_layer_config',
         'g_meta',
         'status',
@@ -47,6 +49,7 @@ class Layer extends Model
             'g_layer_config' => 'collection',
             'g_layer_type' => LayerTypeEnum::class,
             'g_feature_type' => FeatureTypeEnum::class,
+            'g_map_type' => MapTypeEnum::class,
         ];
     }
 

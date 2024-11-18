@@ -298,7 +298,7 @@ const addOnHoverToolTip = (layersArray = []) => {
                     source: lyr.g_layer_config.source.id,
                     id: hoveredPolygonId,
                 }
-                if(lyr.g_layer_type == 'MVT') layerConf['sourceLayer'] = layerId;
+                if(lyr.g_layer_config.source.source.type == 'MVT') layerConf['sourceLayer'] = layerId;
 
                 appConfig.mapObj.on("mousemove", layerId, (e) => {
                     // Change the cursor style as a UI indicator.

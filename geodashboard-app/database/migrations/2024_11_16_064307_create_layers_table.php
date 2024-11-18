@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('g_layer_type')->nullable();
             $table->string('g_layer_url')->nullable();
             $table->string('g_feature_type')->nullable();
+            $table->string('g_map_type')->nullable()->default('Mapbox');
             $table->json('g_layer_config')->nullable();
             $table->json('g_meta')->nullable();
             $table->tinyInteger('status')->default(1);

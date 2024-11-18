@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\FeatureTypeEnum;
 use App\Filament\Resources\LayerResource\Pages;
 use App\LayerTypeEnum;
+use App\MapTypeEnum;
 use App\Models\Layer;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -45,6 +46,10 @@ class LayerResource extends Resource
                     Forms\Components\Select::make('g_feature_type')
                         ->options(FeatureTypeEnum::class)
                         ->required(),
+                    Forms\Components\Select::make('g_map_type')
+                        ->options(MapTypeEnum::class)
+                        ->default(MapTypeEnum::Mapbox)
+                        ->required(),
                     \InvadersXX\FilamentJsoneditor\Forms\JSONEditor::make('g_layer_config')
                         ->height(600)
                         ->required()
@@ -64,6 +69,7 @@ class LayerResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('g_uuid')
                     ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('g_label')
                     ->searchable(),
@@ -72,6 +78,8 @@ class LayerResource extends Resource
                 Tables\Columns\TextColumn::make('g_layer_type')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('g_feature_type')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('g_map_type')
                     ->searchable(),
                 Tables\Columns\IconColumn::make('status')
                     ->boolean()->sortable(),
