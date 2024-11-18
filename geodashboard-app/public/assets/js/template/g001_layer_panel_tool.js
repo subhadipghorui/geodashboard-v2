@@ -317,7 +317,7 @@ const addOnHoverToolTip = (layersArray = []) => {
                     // Copy coordinates array.
                     const coordinates = e.lngLat;
                     console.log(e.features[0].properties)
-                    let description = `<h5>${lyr.g_label}</h5><p><b>Lat-Long</b>: ${e.lngLat.lat},${e.lngLat.lng}</p>`;
+                    let description = `<h5>${lyr.g_label}</h5><p><b>Lat-Long</b>: ${e.lngLat.lat.toFixed(4)},${e.lngLat.lng.toFixed(4)}</p>`;
                     
                     toolTipContent = lyr.g_layer_config.source.toolTip.content.replace(/\{\{(.*?)\}\}/g, (match, key) => e.features[0].properties[key] || match);
                     description += toolTipContent;
