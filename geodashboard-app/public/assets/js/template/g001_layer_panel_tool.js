@@ -82,12 +82,12 @@ function seachInLayer(ele) {
 // Create HTML Layer List Items
 const loadLayerList = (layersArray = []) => {
     $("#layerList").html(null);
+    let layerListHtml = "";
     layersArray.forEach((layerGrp, i, arrGrp) => {
-         $("#layerList").append(`
-            <div>
+         layerListHtml += `
             <label for="base_layer" class="form-label">${layerGrp.group_name}</label>
             <div class="accordion accordion-flush">
-            `);
+            `;
         layerGrp.layers.forEach((layer, i, arr) => {
             const legendConfig = layer.g_style?.legend ?? null;
             const legendHtml = renderLegend(legendConfig);
@@ -97,7 +97,7 @@ const loadLayerList = (layersArray = []) => {
             const visibility =layer.checked ? "checked" : "";
 
             console.log("visibility", layer.g_uuid, visibility);
-            $("#layerList").append(`
+            layerListHtml += `
             <div class="accordion-item">
                 <h2 class="accordion-header" id="flush-${layer.g_slug}">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -145,11 +145,10 @@ const loadLayerList = (layersArray = []) => {
                     </div>
                 </div>
             </div>
-    `);
+    `;
         });
-
-         $("#layerList").append(`</div>
-            </div>`);
+        layerListHtml += `</div></div>`
+         $("#layerList").append(layerListHtml);
     });
 };
 
