@@ -108,6 +108,21 @@ return [
             'sslmode' => 'prefer',
         ],
 
+        'sg_geoserver' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_GIS_HOST', '127.0.0.1'),
+            'port' => env('DB_GIS_PORT', '5432'),
+            'database' => env('DB_GIS_DATABASE', 'sg_geoserver'),
+            'username' => env('DB_GIS_USERNAME', 'root'),
+            'password' => env('DB_GIS_PASSWORD', 'postgres'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
+        ],
+        
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DB_URL'),
