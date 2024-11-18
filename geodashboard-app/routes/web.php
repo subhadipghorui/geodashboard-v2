@@ -11,7 +11,7 @@ Route::get('/', function () {
 Route::get('/layers', function () {
     return response()->json(Layer::all());
 });
-Route::get('/dashboard/{id}', [DashboardController::class, 'view']);
+Route::get('/dashboard/{id}', [DashboardController::class, 'view'])->name('app.dashboard.view');
 
 Route::get('/maps', [MapController::class, 'index']);
 Route::get('/maps/{id}', [MapController::class, 'view']);

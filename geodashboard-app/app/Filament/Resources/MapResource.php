@@ -113,6 +113,13 @@ class MapResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('edit')
+                ->label('Dashboard')
+                ->icon('heroicon-o-computer-desktop')
+                ->color('info')
+                ->url(function (Map $record) {
+                    return route('app.dashboard.view', $record->g_uuid);
+                }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
