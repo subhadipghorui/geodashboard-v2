@@ -14,7 +14,7 @@
  * loadLayerList(layersArray[]) - Creat the layer list items
  * addAllLayersToMap(layersArray[]) - Add all the fetch layers data to Map object
  * addOnClickPopup(layersArray[])
- * addOnHoverPopup(layersArray[])
+ * addOnHoverToolTip(layersArray[])
  * initMap() -  fetch layers and added to map
  *
  ****************************************************/
@@ -274,94 +274,71 @@ const addAllLayersToMap = async (layersArray = []) => {
 // };
 
 // // Add hover popup
-// let hoveredPolygonId = null;
-// const addOnHoverPopup = (layersArray = []) => {
-//     const mapLayersIdArray = layersArray.filter((e) => e.g_lyr_hover == 1);
-//     // Create a popup, but don't add it to the map yet.
-//     const popup = new mapboxgl.Popup({
-//         closeButton: false,
-//         closeOnClick: false,
-//     });
-//     mapLayersIdArray.forEach((lyr) => {
-//         const layerStyles = appConfig.mapObj
-//             .getStyle()
-//             .layers.filter((e) => e.source === lyr.g_slug)
-//             .map((e) => e.id);
-//         // console.log("layerStyles",layerStyles);
+let hoveredPolygonId = null;
+const addOnHoverToolTip = (layersArray = []) => {
+    const mapLayersArray = [];
+    layersArray.forEach((lyrGrp) => {
+        lyrGrp.layers.forEach((lyr) => lyr.g_layer_config.source.onHover.enabled == true ? mapLayersArray.push(lyr) : null)
+    })
+    // Create a popup, but don't add it to the map yet.
+    const popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+    });
+    mapLayersArray.forEach((lyr) => {
+        const layerStyles = appConfig.mapObj
+            .getStyle()
+            .layers.filter((e) => e.source === lyr.g_layer_config.source.id)
+            .map((e) => e.id);
 
-//         // select only one
-//         const eventLayer = layerStyles[0];
-//         appConfig.mapObj.on("mousemove", eventLayer, (e) => {
-//             // Change the cursor style as a UI indicator.
-//             appConfig.mapObj.getCanvas().style.cursor = "pointer";
+        // select all inside config
+        layerStyles.forEach((layerId) => {
+            if(lyr.g_layer_config.source.onHover.enabled && lyr.g_layer_config.source.onHover.layers.includes(layerId)){
+                const layerConf = {
+                    source: lyr.g_layer_config.source.id,
+                    id: hoveredPolygonId,
+                }
+                if(lyr.g_layer_type == 'MVT') layerConf['sourceLayer'] = layerId;
 
-//             if (e.features.length > 0) {
-//                 if (hoveredPolygonId !== null) {
-//                     console.log(
-//                         "cs",
-//                         appConfig.mapObj.getFeatureState({
-//                             source: lyr.g_slug,
-//                             sourceLayer: eventLayer,
-//                             id: hoveredPolygonId,
-//                         })
-//                     );
-//                     appConfig.mapObj.setFeatureState(
-//                         {
-//                             source: lyr.g_slug,
-//                             sourceLayer: eventLayer,
-//                             id: hoveredPolygonId,
-//                         },
-//                         { hover: false }
-//                     );
-//                 }
-//                 hoveredPolygonId = e.features[0].id;
-//                 appConfig.mapObj.setFeatureState(
-//                     {
-//                         source: lyr.g_slug,
-//                         sourceLayer: eventLayer,
-//                         id: hoveredPolygonId,
-//                     },
-//                     { hover: true }
-//                 );
-//             }
-
-//             // Copy coordinates array.
-//             const coordinates = e.lngLat;
-//             const description = `<h5>${lyr.g_label}</h5><p><b>${
-//                 lyr.g_lyr_hover_html
-//             }</b>: ${e.features[0].properties[lyr.g_lyr_hover_html]}</p>`;
-
-//             // Populate the popup and set its coordinates
-//             // based on the feature found.
-//             popup.setLngLat(coordinates).setHTML(description).addTo(map);
-//         });
-//         appConfig.mapObj.on("mouseleave", eventLayer, (e) => {
-//             if (hoveredPolygonId !== null) {
-//                 appConfig.mapObj.setFeatureState(
-//                     {
-//                         source: lyr.g_slug,
-//                         sourceLayer: eventLayer,
-//                         id: hoveredPolygonId,
-//                     },
-//                     { hover: false }
-//                 );
-
-//                 console.log(
-//                     "mouseleave cs",
-//                     appConfig.mapObj.getFeatureState({
-//                         source: lyr.g_slug,
-//                         sourceLayer: eventLayer,
-//                         id: hoveredPolygonId,
-//                     })
-//                 );
-//             }
-//             hoveredPolygonId = null;
-
-//             appConfig.mapObj.getCanvas().style.cursor = "";
-//             popup.remove();
-//         });
-//     });
-// };
+                appConfig.mapObj.on("mousemove", layerId, (e) => {
+                    // Change the cursor style as a UI indicator.
+                    appConfig.mapObj.getCanvas().style.cursor = "pointer";
+        
+                    if (e.features.length > 0) {
+                        if (hoveredPolygonId !== null) {
+                            console.log("cs", appConfig.mapObj.getFeatureState(layerConf));
+                            appConfig.mapObj.setFeatureState(layerConf,{ hover: false });
+                        }
+                        hoveredPolygonId = e.features[0].id;
+                        layerConf['id'] = e.features[0].id
+                        appConfig.mapObj.setFeatureState(layerConf,{ hover: true });
+                    }
+        
+                    // Copy coordinates array.
+                    const coordinates = e.lngLat;
+                    console.log(e.features[0].properties)
+                    let description = `<h5>${lyr.g_label}</h5><p><b>Lat-Long</b>: ${e.lngLat.lat},${e.lngLat.lng}</p>`;
+                    
+                    toolTipContent = lyr.g_layer_config.source.toolTip.content.replace(/\{\{(.*?)\}\}/g, (match, key) => e.features[0].properties[key] || match);
+                    description += toolTipContent;
+                    // Populate the popup and set its coordinates based on the feature found.
+                    lyr.g_layer_config.source.toolTip.enabled ? popup.setLngLat(coordinates).setHTML(description).addTo(appConfig.mapObj) : null;
+                });
+                appConfig.mapObj.on("mouseleave", layerId, (e) => {
+                    if (hoveredPolygonId !== null) {
+                        appConfig.mapObj.setFeatureState(layerConf,{ hover: false });
+                        console.log("mouseleave cs", appConfig.mapObj.getFeatureState(layerConf));
+                    }
+                    hoveredPolygonId = null;
+        
+                    appConfig.mapObj.getCanvas().style.cursor = "";
+                    popup.remove();
+                });
+            }
+        })
+       
+    });
+};
 
 // Initializa map
 const initLayer = async () => {
@@ -410,7 +387,7 @@ const initLayer = async () => {
     $("#map_label").text(appConfig.mapConfig.g_label);
 
     // addOnClickPopup(appConfig.mapConfig.g_layers)
-    // addOnHoverPopup(appConfig.mapConfig.g_layers)
+    addOnHoverToolTip(appConfig.mapConfig.g_layers)
 };
 
 // Initializa map on load
@@ -685,16 +662,21 @@ const handleLayerVisibility = function (value) {
         .layers.filter((e) => e.source === value);
 
     // Update layersArray state
-    // appConfig.layersArray = [...appConfig.layersArray].map((lyr) => {
-    //     if (lyr.g_style.mapbox_layer.source == value) {
-    //         lyr.g_style.mapbox_layer.layout.visibility =
-    //             lyr.g_style.mapbox_layer.layout.visibility === "visible"
-    //                 ? "none"
-    //                 : "visible";
-    //         return lyr;
-    //     }
-    //     return lyr;
-    // });
+    appConfig.layersArray = [...appConfig.layersArray].map((lyrGrp) => {
+        lyrGrp.layers = lyrGrp.layers.map((lyr) => {
+            lyr.g_layer_config.layers.map((style) => {
+                if(style.style.source == value){
+                    style.style.layout.visibility =
+                    style.style.layout.visibility === "visible"
+                        ? "none"
+                        : "visible";
+                }
+                return style;
+            })
+            return lyr;
+        })
+        return lyrGrp;
+    });
 
     layerStyles.forEach((style) => {
         const visibility = appConfig.mapObj.getLayoutProperty(
