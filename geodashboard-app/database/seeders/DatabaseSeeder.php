@@ -17,9 +17,10 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Superadmin User',
-            'email' => 'superadmin@cityplanner.biz',
+            'email' => 'superadmin@myiotlab.in',
             'password' => bcrypt('Test@1234'),
-            'is_superadmin' => 1
+            'is_superadmin' => 1,
+            'status' => 1
         ]);
     }
 }
