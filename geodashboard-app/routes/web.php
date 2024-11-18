@@ -15,11 +15,13 @@ Route::get('/layers', function () {
     return response()->json(Layer::all());
 });
 
-Route::group(["middleware" => ["auth", "user"], "prefix" => "user"], function($routes){
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-});
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::group(["middleware" => ["auth", "user"]], function($routes){
+    Route::get('/dashboard/', [DashboardController::class, 'index'])->name('app.dashboard.index');
+});
 Route::get('/dashboard/{id}', [DashboardController::class, 'view'])->name('app.dashboard.view');
+
 Route::get('/maps', [MapController::class, 'index']);
 Route::get('/maps/{id}', [MapController::class, 'view']);
 Route::post('/maps/{id}/update', [MapController::class, 'update']);
