@@ -19,6 +19,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(["middleware" => ["auth", "user"]], function($routes){
     Route::get('/dashboard/', [DashboardController::class, 'index'])->name('app.dashboard.index');
+
+    Route::get('/mvt', [MVTController::class, 'mvt'])->middleware('throttle:1000,1');
+    Route::any('/tomcat-proxy{any?}', [ReverseProxyController::class, 'tomcatProxy'])->middleware('throttle:1000,1')->where('any', '.*');
 });
 Route::get('/dashboard/{id}', [DashboardController::class, 'view'])->name('app.dashboard.view');
 
@@ -26,6 +29,4 @@ Route::get('/maps', [MapController::class, 'index']);
 Route::get('/maps/{id}', [MapController::class, 'view']);
 Route::post('/maps/{id}/update', [MapController::class, 'update']);
 
-Route::get('/mvt', [MVTController::class, 'mvt'])->middleware('throttle:1000,1');
-Route::any('/tomcat-proxy{any?}', [ReverseProxyController::class, 'tomcatProxy'])->middleware('throttle:1000,1')->where('any', '.*');
 
