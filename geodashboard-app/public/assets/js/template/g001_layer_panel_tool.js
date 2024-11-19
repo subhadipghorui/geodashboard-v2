@@ -200,6 +200,7 @@ const addAllLayersToMap = async (layersArray = []) => {
                 // Add Layers Style
                 lyr.g_layer_config.layers.forEach((ele) => {
                     if (!mapLayersArray.includes(ele.style.id)) {
+                        ele.style.layout.visibility = lyr.checked ? 'visible' : 'none';
                         appConfig.mapObj.addLayer(ele.style);
                     }
                 });
