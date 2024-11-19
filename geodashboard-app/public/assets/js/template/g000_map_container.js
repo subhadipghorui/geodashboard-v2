@@ -68,9 +68,9 @@ const initMap = async () => {
 
     appConfig.mapObj.setCenter(appConfig.mapConfig.g_meta.map.center ?? [0,0])
     appConfig.mapObj.setZoom(appConfig.mapConfig.g_meta.map.zoom ?? 5);
-    map.setProjection(appConfig.mapConfig.g_meta.map.projection ?? "mercator");
-    map.setPitch(appConfig.mapConfig.g_meta.map.pitch ?? 0);
-    map.setBearing(appConfig.mapConfig.g_meta.map.bearing ?? 0);
+    appConfig.mapObj.setProjection(appConfig.mapConfig.g_meta.map.projection ?? "mercator");
+    appConfig.mapObj.setPitch(appConfig.mapConfig.g_meta.map.pitch ?? 0);
+    appConfig.mapObj.setBearing(appConfig.mapConfig.g_meta.map.bearing ?? 0);
 
     // Disable map rotation using right click + drag
     appConfig.mapObj.dragRotate.disable();

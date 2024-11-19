@@ -62,7 +62,7 @@ function seachInLayer(ele) {
 
         if (ele.value !== "" && !resData.error) {
             $(`#${ele.attributes["searchResultDiv"].value}`).show();
-            console.log(resData.data);
+            // console.log(resData.data);
             let searchResult = "";
             resData.data?.search.forEach((e) => {
                 searchResult += ` <li class="dropdown-item text-wrap-search" onclick=" appConfig.mapObj.flyTo({center: [${
@@ -84,7 +84,7 @@ const loadLayerList = (layersArray = []) => {
     $("#layerList").html(null);
     let layerListHtml = "";
     layersArray.forEach((layerGrp, i, arrGrp) => {
-         layerListHtml += `
+        layerListHtml += `
             <label for="base_layer" class="form-label">${layerGrp.group_name}</label>
             <div class="accordion accordion-flush">
             `;
@@ -94,9 +94,7 @@ const loadLayerList = (layersArray = []) => {
             const searchConfig = layer.g_style?.search ?? null;
 
             // layer status
-            const visibility =layer.checked ? "checked" : "";
-
-            console.log("visibility", layer.g_uuid, visibility);
+            const visibility = layer.checked ? "checked" : "";
             layerListHtml += `
             <div class="accordion-item">
                 <h2 class="accordion-header" id="flush-${layer.g_slug}">
@@ -147,8 +145,8 @@ const loadLayerList = (layersArray = []) => {
             </div>
     `;
         });
-        layerListHtml += `</div></div>`
-         $("#layerList").append(layerListHtml);
+        layerListHtml += `</div></div>`;
+        $("#layerList").append(layerListHtml);
     });
 };
 
@@ -186,23 +184,26 @@ const addAllLayersToMap = async (layersArray = []) => {
         mapLayersArray.push(ele.id);
     });
 
-    console.log(mapSourcesArray);
-    console.log(layersArray);
+    // console.log(mapSourcesArray);
+    // console.log(layersArray);
     // Custom MVT layers.
     layersArray.forEach((layer, i, arr) => {
         if (!mapSourcesArray.includes(layer.g_slug)) {
             layer.layers.forEach((lyr) => {
                 // Add Source
-                if(!mapSourcesArray.includes(lyr.g_layer_config.source.id)){
-                    appConfig.mapObj.addSource(lyr.g_layer_config.source.id, lyr.g_layer_config.source.source);
+                if (!mapSourcesArray.includes(lyr.g_layer_config.source.id)) {
+                    appConfig.mapObj.addSource(
+                        lyr.g_layer_config.source.id,
+                        lyr.g_layer_config.source.source
+                    );
                 }
-                 // Add Layers Style
+                // Add Layers Style
                 lyr.g_layer_config.layers.forEach((ele) => {
                     if (!mapLayersArray.includes(ele.style.id)) {
                         appConfig.mapObj.addLayer(ele.style);
                     }
-                })
-            })
+                });
+            });
 
             return Promise.resolve(true);
         }
@@ -210,75 +211,86 @@ const addAllLayersToMap = async (layersArray = []) => {
 };
 
 // // Add onclick popup on layers
-// const addOnClickPopup = (layersArray = []) => {
-//     const mapLayersSourceIdArray = layersArray.map((e) => e.g_slug);
-//     const mapLayersStylesIdArray = appConfig.mapObj
-//         .getStyle()
-//         .layers.filter((e) => mapLayersSourceIdArray.includes(e.source))
-//         .map((e) => e.id);
+const addOnClickPopup = (layersArray = []) => {
+    // const mapLayersSourceIdArray = layersArray.map((e) => e.g_slug);
+    const mapLayersSourceIdArray = [];
+    layersArray.forEach((lyrGrp) => {
+        lyrGrp.layers.forEach((lyr) =>
+            lyr.g_layer_config.source.onClick.enabled == true
+                ? mapLayersSourceIdArray.push(lyr.g_layer_config.source.id)
+                : null
+        );
+    });
 
-//     appConfig.mapObj.on("click", (e) => {
-//         var coordinates = e.lngLat;
-//         console.log("Clicked coordinates:", e);
-//         const features = appConfig.mapObj.queryRenderedFeatures(e.point);
-//         console.log(features);
+    const mapLayersStylesIdArray = appConfig.mapObj
+        .getStyle()
+        .layers.filter((e) => mapLayersSourceIdArray.includes(e.source))
+        .map((e) => e.id);
 
-//         // Unique Events by source
-//         let uniqueStyleObj = new Map();
-//         features.forEach((obj) => uniqueStyleObj.set(obj.source, obj));
-//         let uniqueEventFeatures = Array.from(uniqueStyleObj.values());
-//         // Popup HTML
-//         let tempLayerFeatureList = [];
+    appConfig.mapObj.on("click", (e) => {
+        const features = appConfig.mapObj.queryRenderedFeatures(e.point);
+        // console.log(features);
 
-//         $("#popup-modal-content").html("");
+        // Unique Events by source
+        let uniqueStyleObj = new Map();
+        features.forEach((obj) => uniqueStyleObj.set(obj.source, obj));
+        let uniqueEventFeatures = Array.from(uniqueStyleObj.values());
+        // Popup HTML
+        let tempLayerFeatureList = [];
 
-//         uniqueEventFeatures.forEach((feature) => {
-//             if (!mapLayersStylesIdArray.includes(feature.layer.id)) {
-//                 // Skip processing this feature and continue with the next iteration
-//                 return;
-//             }
-//             if (!tempLayerFeatureList.includes(feature.layer.id)) {
-//                 // Push to temp layer feature list
-//                 tempLayerFeatureList.push(feature.layer.id);
+        $("#popup-modal-content").html("");
 
-//                 // Add layer title
-//                 let popup_html = `<div class="my-2"><h4>${feature.layer.id}</h4></div>`;
+        uniqueEventFeatures.forEach((feature) => {
+            if (!mapLayersStylesIdArray.includes(feature.layer.id)) {
+                // Skip processing this feature and continue with the next iteration
+                return;
+            }
+            if (!tempLayerFeatureList.includes(feature.layer.id)) {
+                // Push to temp layer feature list
+                tempLayerFeatureList.push(feature.layer.id);
 
-//                 // Create table
-//                 // Create header element
-//                 let attributesTableHeader = `<tr><th scope="col">Attribute</th><th scope="col">Value</th></tr>`;
-//                 popup_html += `<div class="table-responsive"  class="mb-3""><table class="table table-striped table-bordered"><thead class="thead-dark">${attributesTableHeader}</thead><tbody id="popup-modal-table-${feature.layer.id}"></tbody></table></div>`;
+                // Add layer title
+                let popup_html = `<div class="my-2"><h4>${feature.layer.id}</h4></div>`;
 
-//                 // Mount table
-//                 $("#popup-modal-content").append(popup_html);
-//             }
+                // Create table
+                // Create header element
+                let attributesTableHeader = `<tr><th scope="col">Attribute</th><th scope="col">Value</th></tr>`;
+                popup_html += `<div class="table-responsive"  class="mb-3""><table class="table table-striped table-bordered"><thead class="thead-dark">${attributesTableHeader}</thead><tbody id="popup-modal-table-${feature.layer.id}"></tbody></table></div>`;
 
-//             // Append rows in the tbody
-//             let attributesVlaues = feature.properties;
-//             let attributesTableBody = "";
-//             Object.keys(attributesVlaues).forEach((key) => {
-//                 attributesTableBody += `<tr>`;
-//                 if (key !== "geom")
-//                     attributesTableBody += `<td>${key}</td><td>${attributesVlaues[key]}</td>`;
-//                 attributesTableBody += `</tr>`;
-//             });
+                // Mount table
+                $("#popup-modal-content").append(popup_html);
+            }
 
-//             $(`#popup-modal-table-${feature.layer.id}`).append(
-//                 attributesTableBody
-//             );
+            // Append rows in the tbody
+            let attributesVlaues = feature.properties;
+            let attributesTableBody = "";
+            Object.keys(attributesVlaues).forEach((key) => {
+                attributesTableBody += `<tr>`;
+                if (key !== "geom")
+                    attributesTableBody += `<td>${key}</td><td>${attributesVlaues[key]}</td>`;
+                attributesTableBody += `</tr>`;
+            });
 
-//             $("#popup-modal").modal("toggle");
-//         });
-//     });
-// };
+            $(`#popup-modal-table-${feature.layer.id}`).append(
+                attributesTableBody
+            );
+
+            $("#popup-modal").modal("toggle");
+        });
+    });
+};
 
 // // Add hover popup
 let hoveredPolygonId = null;
 const addOnHoverToolTip = (layersArray = []) => {
     const mapLayersArray = [];
     layersArray.forEach((lyrGrp) => {
-        lyrGrp.layers.forEach((lyr) => lyr.g_layer_config.source.onHover.enabled == true ? mapLayersArray.push(lyr) : null)
-    })
+        lyrGrp.layers.forEach((lyr) =>
+            lyr.g_layer_config.source.onHover.enabled == true
+                ? mapLayersArray.push(lyr)
+                : null
+        );
+    });
     // Create a popup, but don't add it to the map yet.
     const popup = new mapboxgl.Popup({
         closeButton: false,
@@ -292,50 +304,73 @@ const addOnHoverToolTip = (layersArray = []) => {
 
         // select all inside config
         layerStyles.forEach((layerId) => {
-            if(lyr.g_layer_config.source.onHover.enabled && lyr.g_layer_config.source.onHover.layers.includes(layerId)){
+            if (
+                lyr.g_layer_config.source.onHover.enabled &&
+                lyr.g_layer_config.source.onHover.layers.includes(layerId)
+            ) {
                 const layerConf = {
                     source: lyr.g_layer_config.source.id,
                     id: hoveredPolygonId,
-                }
-                if(lyr.g_layer_config.source.source.type == 'MVT') layerConf['sourceLayer'] = layerId;
+                };
+                if (lyr.g_layer_config.source.source.type == "vector")
+                    layerConf["sourceLayer"] = layerId;
 
                 appConfig.mapObj.on("mousemove", layerId, (e) => {
                     // Change the cursor style as a UI indicator.
                     appConfig.mapObj.getCanvas().style.cursor = "pointer";
-        
+
                     if (e.features.length > 0) {
                         if (hoveredPolygonId !== null) {
-                            console.log("cs", appConfig.mapObj.getFeatureState(layerConf));
-                            appConfig.mapObj.setFeatureState(layerConf,{ hover: false });
+                            // console.log("cs", appConfig.mapObj.getFeatureState(layerConf));
+                            appConfig.mapObj.setFeatureState(layerConf, {
+                                hover: false,
+                            });
                         }
                         hoveredPolygonId = e.features[0].id;
-                        layerConf['id'] = e.features[0].id
-                        appConfig.mapObj.setFeatureState(layerConf,{ hover: true });
+                        layerConf["id"] = e.features[0].id;
+                        appConfig.mapObj.setFeatureState(layerConf, {
+                            hover: true,
+                        });
                     }
-        
+
                     // Copy coordinates array.
                     const coordinates = e.lngLat;
-                    console.log(e.features[0].properties)
-                    let description = `<h5>${lyr.g_label}</h5><p><b>Lat-Long</b>: ${e.lngLat.lat.toFixed(4)},${e.lngLat.lng.toFixed(4)}</p>`;
-                    
-                    toolTipContent = lyr.g_layer_config.source.toolTip.content.replace(/\{\{(.*?)\}\}/g, (match, key) => e.features[0].properties[key] || match);
+                    // console.log(e.features[0].properties)
+                    let description = `<h5>${
+                        lyr.g_label
+                    }</h5><p><b>Lat-Long</b>: ${e.lngLat.lat.toFixed(
+                        4
+                    )},${e.lngLat.lng.toFixed(4)}</p>`;
+
+                    toolTipContent =
+                        lyr.g_layer_config.source.toolTip.content.replace(
+                            /\{\{(.*?)\}\}/g,
+                            (match, key) =>
+                                e.features[0].properties[key] || match
+                        );
                     description += toolTipContent;
                     // Populate the popup and set its coordinates based on the feature found.
-                    lyr.g_layer_config.source.toolTip.enabled ? popup.setLngLat(coordinates).setHTML(description).addTo(appConfig.mapObj) : null;
+                    lyr.g_layer_config.source.toolTip.enabled
+                        ? popup
+                              .setLngLat(coordinates)
+                              .setHTML(description)
+                              .addTo(appConfig.mapObj)
+                        : null;
                 });
                 appConfig.mapObj.on("mouseleave", layerId, (e) => {
                     if (hoveredPolygonId !== null) {
-                        appConfig.mapObj.setFeatureState(layerConf,{ hover: false });
-                        console.log("mouseleave cs", appConfig.mapObj.getFeatureState(layerConf));
+                        appConfig.mapObj.setFeatureState(layerConf, {
+                            hover: false,
+                        });
+                        // console.log("mouseleave cs", appConfig.mapObj.getFeatureState(layerConf));
                     }
                     hoveredPolygonId = null;
-        
+
                     appConfig.mapObj.getCanvas().style.cursor = "";
                     popup.remove();
                 });
             }
-        })
-       
+        });
     });
 };
 
@@ -380,13 +415,13 @@ const initLayer = async () => {
         appConfig.mapConfig.g_meta.baseMaps.defaultBaseMap
     );
     loadLayerList(appConfig.mapConfig.g_layers);
-    addAllLayersToMap(appConfig.mapConfig.g_layers)
+    addAllLayersToMap(appConfig.mapConfig.g_layers);
 
     // // Set Map Label
     $("#map_label").text(appConfig.mapConfig.g_label);
 
-    // addOnClickPopup(appConfig.mapConfig.g_layers)
-    addOnHoverToolTip(appConfig.mapConfig.g_layers)
+    addOnClickPopup(appConfig.mapConfig.g_layers);
+    addOnHoverToolTip(appConfig.mapConfig.g_layers);
 };
 
 // Initializa map on load
@@ -646,7 +681,6 @@ appConfig.mapObj.on("load", () => {
  ****************************************************/
 // change base map style
 const handleChangeBaseMap = function (value) {
-    console.log(value);
     appConfig.mapObj.setStyle(value);
     appConfig.mapObj.on("styledata", () => {
         addAllLayersToMap(appConfig.layersArray);
@@ -655,7 +689,6 @@ const handleChangeBaseMap = function (value) {
 
 // control the layer visibility
 const handleLayerVisibility = function (value) {
-    console.log(value);
     const layerStyles = appConfig.mapObj
         .getStyle()
         .layers.filter((e) => e.source === value);
@@ -664,16 +697,16 @@ const handleLayerVisibility = function (value) {
     appConfig.layersArray = [...appConfig.layersArray].map((lyrGrp) => {
         lyrGrp.layers = lyrGrp.layers.map((lyr) => {
             lyr.g_layer_config.layers.map((style) => {
-                if(style.style.source == value){
+                if (style.style.source == value) {
                     style.style.layout.visibility =
-                    style.style.layout.visibility === "visible"
-                        ? "none"
-                        : "visible";
+                        style.style.layout.visibility === "visible"
+                            ? "none"
+                            : "visible";
                 }
                 return style;
-            })
+            });
             return lyr;
-        })
+        });
         return lyrGrp;
     });
 
@@ -685,5 +718,4 @@ const handleLayerVisibility = function (value) {
         const newState = visibility === "visible" ? "none" : "visible";
         appConfig.mapObj.setLayoutProperty(style.id, "visibility", newState);
     });
-
 };
