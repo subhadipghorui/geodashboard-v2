@@ -32,12 +32,13 @@ class MapResource extends Resource
             ->schema([
                 Forms\Components\Section::make([
                     Forms\Components\TextInput::make('g_uuid')
-                    ->readOnly(),
-                    Forms\Components\TextInput::make('g_label')
-                        ->required()
-                        ->maxLength(255),
+                        ->disabled(),
                     Forms\Components\TextInput::make('g_slug')
                         ->disabled()
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('g_label')
+                        ->required()
+                        ->unique('maps', 'g_label', ignoreRecord: true)
                         ->maxLength(255),
                     Forms\Components\TextInput::make('g_template')
                         ->default('template_mapbox01')
@@ -114,12 +115,18 @@ class MapResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('edit')
-                ->label('Dashboard')
-                ->icon('heroicon-o-computer-desktop')
-                ->color('info')
-                ->url(function (Map $record) {
-                    return route('app.dashboard.view', $record->g_uuid);
-                }),
+                    ->label('Dashboard')
+                    ->icon('heroicon-o-computer-desktop')
+                    ->color('info')
+                    ->url(function (Map $record) {
+                        return route('app.dashboard.view', $record->g_uuid);
+                    }),
+                Tables\Actions\ReplicateAction::make()
+                    ->beforeReplicaSaved(function (Map $replica): void {
+                        $qid = uniqid();
+                        $replica->g_label = "New Map ". $qid;
+                        $replica->g_slug = "new-map-". $qid;
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

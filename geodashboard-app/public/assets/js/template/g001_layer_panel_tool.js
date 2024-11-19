@@ -85,11 +85,11 @@ const loadLayerList = (layersArray = []) => {
     let layerListHtml = "";
     layersArray.forEach((layerGrp, i, arrGrp) => {
         layerListHtml += `
-            <label for="base_layer" class="form-label">${layerGrp.group_name}</label>
+            <label for="base_layer" class="form-label">${layerGrp.group_name} ${i}</label>
             <div class="accordion accordion-flush">
             `;
         layerGrp.layers.forEach((layer, i, arr) => {
-            const legendConfig = layer.g_style?.legend ?? null;
+            const legendConfig = layer.g_layer_config.legend ?? null;
             const legendHtml = renderLegend(legendConfig);
             const searchConfig = layer.g_style?.search ?? null;
 
@@ -146,8 +146,8 @@ const loadLayerList = (layersArray = []) => {
     `;
         });
         layerListHtml += `</div></div>`;
-        $("#layerList").append(layerListHtml);
     });
+    $("#layerList").append(layerListHtml);
 };
 
 // Create HTML Base Map List Items
@@ -216,7 +216,7 @@ const addOnClickPopup = (layersArray = []) => {
     const mapLayersSourceIdArray = [];
     layersArray.forEach((lyrGrp) => {
         lyrGrp.layers.forEach((lyr) =>
-            lyr.g_layer_config.source.onClick.enabled == true
+            lyr.g_layer_config?.onClick?.enabled == true
                 ? mapLayersSourceIdArray.push(lyr.g_layer_config.source.id)
                 : null
         );
@@ -286,7 +286,7 @@ const addOnHoverToolTip = (layersArray = []) => {
     const mapLayersArray = [];
     layersArray.forEach((lyrGrp) => {
         lyrGrp.layers.forEach((lyr) =>
-            lyr.g_layer_config.source.onHover.enabled == true
+            lyr.g_layer_config?.onHover?.enabled == true
                 ? mapLayersArray.push(lyr)
                 : null
         );
@@ -305,8 +305,8 @@ const addOnHoverToolTip = (layersArray = []) => {
         // select all inside config
         layerStyles.forEach((layerId) => {
             if (
-                lyr.g_layer_config.source.onHover.enabled &&
-                lyr.g_layer_config.source.onHover.layers.includes(layerId)
+                lyr.g_layer_config?.onHover?.enabled &&
+                lyr.g_layer_config?.onHover?.layers.includes(layerId)
             ) {
                 const layerConf = {
                     source: lyr.g_layer_config.source.id,
@@ -341,21 +341,23 @@ const addOnHoverToolTip = (layersArray = []) => {
                     }</h5><p><b>Lat-Long</b>: ${e.lngLat.lat.toFixed(
                         4
                     )},${e.lngLat.lng.toFixed(4)}</p>`;
-
-                    toolTipContent =
-                        lyr.g_layer_config.source.toolTip.content.replace(
+                    if(lyr.g_layer_config?.toolTip){
+                        toolTipContent =
+                        lyr.g_layer_config.toolTip.content.replace(
                             /\{\{(.*?)\}\}/g,
                             (match, key) =>
                                 e.features[0].properties[key] || match
                         );
                     description += toolTipContent;
                     // Populate the popup and set its coordinates based on the feature found.
-                    lyr.g_layer_config.source.toolTip.enabled
+                    lyr.g_layer_config.toolTip.enabled
                         ? popup
                               .setLngLat(coordinates)
                               .setHTML(description)
                               .addTo(appConfig.mapObj)
                         : null;
+                    }
+                    
                 });
                 appConfig.mapObj.on("mouseleave", layerId, (e) => {
                     if (hoveredPolygonId !== null) {

@@ -32,9 +32,8 @@ class LayerResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make([
-                    Forms\Components\TextInput::make('g_uuid')
-                    ->readOnly(),
                     Forms\Components\TextInput::make('g_label')
+                        ->unique('layers', 'g_label', ignoreRecord: true)
                         ->required()
                         ->maxLength(255),
                     Forms\Components\TextInput::make('g_slug')
@@ -52,6 +51,7 @@ class LayerResource extends Resource
                         ->required(),
                     \InvadersXX\FilamentJsoneditor\Forms\JSONEditor::make('g_layer_config')
                         ->height(600)
+                        ->default(json_decode(config('global.G_Layer_Config')))
                         ->required()
                         ->columnSpanFull(),
                     \InvadersXX\FilamentJsoneditor\Forms\JSONEditor::make('g_meta')
@@ -101,6 +101,12 @@ class LayerResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ReplicateAction::make()
+                ->beforeReplicaSaved(function (Layer $replica): void {
+                    $qid = uniqid();
+                    $replica->g_label = "New Layer ". $qid;
+                    $replica->g_slug = "new-slug-". $qid;
+                }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

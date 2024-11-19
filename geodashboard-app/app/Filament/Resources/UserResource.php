@@ -12,13 +12,14 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    
+
     protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationGroup = 'System';
@@ -27,22 +28,30 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Section::make([
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->email()
+                    ->unique('users', 'email', ignoreRecord: true)
                     ->required()
                     ->maxLength(255),
                 Forms\Components\DateTimePicker::make('email_verified_at'),
+
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->revealable()
+                    ->autocomplete(false)
+                    ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                    ->dehydrated(fn($state) => filled($state))
+                    ->required(fn(string $context): bool => $context === 'create')
+                    ->maxLength(255),
                 Forms\Components\Toggle::make('is_superadmin')
                     ->required(),
                 Forms\Components\Toggle::make('status')
                     ->required(),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
+                ])->columns(2)
             ]);
     }
 
