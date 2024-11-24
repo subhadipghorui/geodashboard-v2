@@ -56,6 +56,7 @@ const resetMapCenter = () => {
 const handleMapLayersPanel = () => {
     $("#map_layers_panel").toggle("slide", { direction: "left" }, 400);
     $("#map").toggleClass("map-layer-menu-margin");
+    appConfig.mapObj.resize();
 };
 
 
