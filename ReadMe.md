@@ -225,7 +225,7 @@ Map box Source with layer url
 - ***layout**: `{"visibility": "none"}` this required for visbility changed
 
 
-## 3.2.2 legend (Optional)
+### 3.2.2 legend (Optional)
 
 Define a JSON config for legend
 
@@ -246,7 +246,7 @@ Define a JSON config for legend
 
 ```
 
-## 3.2.3 onHover (Optional)
+### 3.2.3 onHover (Optional)
 
 Define map iteraction. 
 
@@ -264,7 +264,7 @@ Define map iteraction.
   }
 ```
 
-## 3.2.4 toolTip (Optional)
+### 3.2.4 toolTip (Optional)
 
 Define on hover if there is a tool-tip open. 
 
@@ -280,7 +280,7 @@ Define on hover if there is a tool-tip open.
   }
 ```
 
-## 3.2.5 onClick (Optional)
+### 3.2.5 onClick (Optional)
 
 Define on click of feature interactions. 
 
