@@ -102,7 +102,8 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('filament.superadmin.pages.dashboard') }}">Dashboard</a>
+                                    <a class="dropdown-item" href="{{ route('filament.superadmin.pages.dashboard') }}">Admin Panel</a>
+                                    <a class="dropdown-item" href="{{ route('app.dashboard.index') }}">Dashboard</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

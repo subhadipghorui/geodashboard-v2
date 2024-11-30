@@ -85,7 +85,7 @@ const loadLayerList = (layersArray = []) => {
     let layerListHtml = "";
     layersArray.forEach((layerGrp, i, arrGrp) => {
         layerListHtml += `
-            <label for="base_layer" class="form-label">${layerGrp.group_name} ${i}</label>
+            <label for="base_layer" class="form-label">${layerGrp.group_name}</label>
             <div class="accordion accordion-flush">
             `;
         layerGrp.layers.forEach((layer, i, arr) => {
@@ -267,7 +267,7 @@ const addOnClickPopup = (layersArray = []) => {
             let attributesTableBody = "";
             Object.keys(attributesVlaues).forEach((key) => {
                 attributesTableBody += `<tr>`;
-                if (key !== "geom")
+                if (!key.includes('geom'))
                     attributesTableBody += `<td>${key}</td><td>${attributesVlaues[key]}</td>`;
                 attributesTableBody += `</tr>`;
             });
@@ -430,249 +430,6 @@ const initLayer = async () => {
 // Initializa map on load
 appConfig.mapObj.on("load", () => {
     initLayer();
-
-    // WMS/WMTS
-    // appConfig.mapObj.addSource('usa_pop_wmts', {
-    //     'type': 'raster',
-    //     'tiles': [
-    //         // `http://192.168.122.55/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=topp:states`,
-
-    //         // `http://192.168.122.55/geoserver/gwc/service/wmts?layer=topp:states&style=&tilematrixset=EPSG:3857&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG:3857:{z}&TILECOL={x}&TILEROW={y}`,
-
-    //         // `http://192.168.122.55/geoserver/gwc/service/wmts?layer=myiotlab:Administrative SUBDISTRICT_BOUNDARY&style=&tilematrixset=EPSG:3857&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG:3857:{z}&TILECOL={x}&TILEROW={y}`,
-
-    //     ],
-    //     'minzoom': 0,
-    //     'maxzoom': 22
-    // });
-    // appConfig.mapObj.addLayer(
-    //        {
-    //         'id': 'usa_pop_wmts',
-    //         'type': 'raster',
-    //         'source': 'usa_pop_wmts',
-    //         'paint': {}
-    //     },
-    // );
-
-    // Vector
-    // appConfig.mapObj.addSource('use_pop_vector', {
-    //     'type': 'vector',
-    //     'tiles': [
-    //         // Using gridset available in geoserver (epsg-3857 mercator projection, 900913 and 3857 are same)
-    //         // `http://192.168.122.55/geoserver/gwc/service/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=topp:states&STYLE=&TILEMATRIX=EPSG:3857:{z}&TILEMATRIXSET=EPSG:3857&FORMAT=application/json;type=geojson&TILECOL={x}&TILEROW={y}`,
-    //         `http://192.168.122.55/geoserver/gwc/service/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=topp:states&STYLE=population&TILEMATRIX=EPSG:3857:{z}&TILEMATRIXSET=EPSG:3857&FORMAT=application/vnd.mapbox-vector-tile&TILECOL={x}&TILEROW={y}`,
-
-    //         // Using bbox of the map (epsg-3857 mercator projection, 900913 and 3857 are same)
-    //         // `http://192.168.122.55/geoserver/topp/wms?service=WMS&version=1.1.0&request=GetMap&layers=topp%3Astates&bbox={bbox-epsg-3857}&width=768&height=414&srs=EPSG:3857&styles=polygon&format=application/vnd.mapbox-vector-tile`,
-
-    //         // Postgis api
-    //         // `http://192.168.122.55/geodashboard/api/mvt?x={x}&y={y}&z={z}&schema=india&table_slug=Administrative STATE_BOUNDARY`
-    //     ],
-    //     'minzoom': 0,
-    //     'maxzoom': 20
-    // });
-    // appConfig.mapObj.addSource('use_pop_vector', {
-    //     'type': 'geojson',
-    //     'data': {
-    //         "type": "FeatureCollection",
-    //         "features": [
-    //             {
-    //                 "type": "Feature",
-    //                 "id": "states.11",
-    //                 "geometry": {
-    //                 "type": "Polygon",
-    //                 "coordinates": [
-    //                     [
-    //                     [
-    //                         -114.558304,
-    //                         33.036743
-    //                     ],
-    //                     [
-    //                         -114.710564,
-    //                         33.095345
-    //                     ],
-    //                     [
-    //                         -114.724144,
-    //                         33.41103
-    //                     ],
-    //                     [
-    //                         -114.528633,
-    //                         33.560047
-    //                     ],
-    //                     [
-    //                         -114.517418,
-    //                         33.965046
-    //                     ],
-    //                     [
-    //                         -114.124451,
-    //                         34.272606
-    //                     ],
-    //                     [
-    //                         -114.375717,
-    //                         34.459667
-    //                     ],
-    //                     [
-    //                         -114.464844,
-    //                         34.709866
-    //                     ],
-    //                     [
-    //                         -114.626465,
-    //                         34.87553
-    //                     ],
-    //                     [
-    //                         -114.635109,
-    //                         35.118656
-    //                     ],
-    //                     [
-    //                         -114.558784,
-    //                         35.220184
-    //                     ],
-    //                     [
-    //                         -114.67141,
-    //                         35.515762
-    //                     ],
-    //                     [
-    //                         -114.660789,
-    //                         35.880489
-    //                     ],
-    //                     [
-    //                         -114.727333,
-    //                         36.085983
-    //                     ],
-    //                     [
-    //                         -114.379997,
-    //                         36.151009
-    //                     ],
-    //                     [
-    //                         -114.232674,
-    //                         36.018345
-    //                     ],
-    //                     [
-    //                         -114.128227,
-    //                         36.041744
-    //                     ],
-    //                     [
-    //                         -114.036598,
-    //                         36.216038
-    //                     ],
-    //                     [
-    //                         -114.043137,
-    //                         36.996563
-    //                     ],
-    //                     [
-    //                         -110.214844,
-    //                         36.991913
-    //                     ],
-    //                     [
-    //                         -110.214844,
-    //                         31.338535
-    //                     ],
-    //                     [
-    //                         -111.07132,
-    //                         31.335535
-    //                     ],
-    //                     [
-    //                         -114.820969,
-    //                         32.487114
-    //                     ],
-    //                     [
-    //                         -114.711906,
-    //                         32.734966
-    //                     ],
-    //                     [
-    //                         -114.571175,
-    //                         32.737392
-    //                     ],
-    //                     [
-    //                         -114.460655,
-    //                         32.845379
-    //                     ],
-    //                     [
-    //                         -114.467606,
-    //                         32.977749
-    //                     ],
-    //                     [
-    //                         -114.558304,
-    //                         33.036743
-    //                     ]
-    //                     ]
-    //                 ]
-    //                 },
-    //                 "geometry_name": "the_geom",
-    //                 "properties": {
-    //                 "CARPOOL": 239083,
-    //                 "DRVALONE": 1178320,
-    //                 "EMPLOYED": 1603896,
-    //                 "FAMILIES": 940106,
-    //                 "FEMALE": 1854537,
-    //                 "HOUSHOLD": 1368843,
-    //                 "LAND_KM": 294333.462,
-    //                 "MALE": 1810691,
-    //                 "MANUAL": 185109,
-    //                 "PERSONS": 3665228,
-    //                 "PUBTRANS": 32856,
-    //                 "P_FEMALE": 0.506,
-    //                 "P_MALE": 0.494,
-    //                 "SAMP_POP": 468178,
-    //                 "SERVICE": 455896,
-    //                 "STATE_ABBR": "AZ",
-    //                 "STATE_FIPS": "04",
-    //                 "STATE_NAME": "Arizona",
-    //                 "SUB_REGION": "Mtn",
-    //                 "UNEMPLOY": 123902,
-    //                 "WATER_KM": 942.772,
-    //                 "WORKERS": 1358263
-    //                 }
-    //             },
-    //             {
-    //                 "type": "Feature",
-    //                 "properties": {},
-    //                 "geometry": {
-    //                 "coordinates": [
-    //                     [
-    //                     [
-    //                         -116.98140938775965,
-    //                         48.85119375147178
-    //                     ],
-    //                     [
-    //                         -116.98140938775965,
-    //                         44.16990966466889
-    //                     ],
-    //                     [
-    //                         -104.41258249238481,
-    //                         44.16990966466889
-    //                     ],
-    //                     [
-    //                         -104.41258249238481,
-    //                         48.85119375147178
-    //                     ],
-    //                     [
-    //                         -116.98140938775965,
-    //                         48.85119375147178
-    //                     ]
-    //                     ]
-    //                 ],
-    //                 "type": "Polygon"
-    //                 }
-    //             }
-    //         ]
-    //       }
-    // })
-    // appConfig.mapObj.addLayer(
-    //     {
-    //         'id': 'use_pop_vector1', // Layer ID
-    //         'type': 'fill',
-    //         'source': 'use_pop_vector', // ID of the tile source created above
-    //         'source-layer': 'states',
-    //         // Source has several layers. We visualize the one with name 'sequence'.
-    //         "layout":{"visibility":"visible"},
-    //         "paint": {
-    //             'fill-color': '#0080ff', // blue color fill
-    //             'fill-opacity': 0.5
-
-    //         }
-    //     },
-    // );
 });
 
 /***************************************************
@@ -708,6 +465,7 @@ const handleLayerVisibility = function (value) {
                 }
                 return style;
             });
+            lyr.checked = !lyr.checked
             return lyr;
         });
         return lyrGrp;

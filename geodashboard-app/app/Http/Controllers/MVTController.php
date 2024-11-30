@@ -62,6 +62,7 @@ class MVTController extends Controller
                 while (!feof($mvtData)) {
                     echo fread($mvtData, 8192);  // Read and send the data in chunks (8192 bytes)
                 }
+                fclose($mvtData);
             }, 200, [
                 'Content-Type' => 'application/x-protobuf',  // MVT uses protobuf format
                 'Content-Disposition' => 'inline; filename="tile.mvt"',  // Suggest a filename for download
