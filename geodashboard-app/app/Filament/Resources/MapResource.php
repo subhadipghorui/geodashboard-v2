@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\MapResource\Pages;
 use App\Filament\Resources\MapResource\RelationManagers;
+use App\Models\Group;
 use App\Models\Layer;
 use App\Models\Map;
 use Filament\Forms;
@@ -31,15 +32,23 @@ class MapResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make([
+                   Forms\Components\Grid::make([
+                    'default' => 1,
+                    'md' => 3
+                   ])->schema([
+                    Forms\Components\TextInput::make('g_label')
+                    ->required()
+                    ->unique('maps', 'g_label', ignoreRecord: true)
+                    ->maxLength(255),
                     Forms\Components\TextInput::make('g_uuid')
                         ->disabled(),
                     Forms\Components\TextInput::make('g_slug')
                         ->disabled()
                         ->maxLength(255),
-                    Forms\Components\TextInput::make('g_label')
-                        ->required()
-                        ->unique('maps', 'g_label', ignoreRecord: true)
-                        ->maxLength(255),
+                   ]),
+                   Forms\Components\Select::make('g_groups')
+                        ->multiple()
+                        ->options(Group::all()->pluck('g_label', 'id')),
                     Forms\Components\TextInput::make('g_template')
                         ->default('template_mapbox01')
                         ->maxLength(255),
@@ -87,10 +96,10 @@ class MapResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('g_label')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('g_uuid')
                     ->copyable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('g_label')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('g_template')
                     ->searchable(),

@@ -17,11 +17,11 @@
                     <h5 class="card-title">{{$map->g_label}}</h5>
                     <p class="card-text">
                         <b>Template: </b>{{$map->g_template}}<br>
-                        {{-- <p>
-                        @foreach (json_decode($map->g_group) as $item)
-                        <span class="badge bg-info text-dark">{{$item}}</span>
+                        <p>
+                        @foreach ($map->groups() as $item)
+                        <span class="badge bg-warning text-dark">{{$item->g_label}}</span>
                         @endforeach 
-                        </p>  --}}
+                        </p> 
                         @if ($map->status == 1)
                             <span class="badge bg-success text-light">Published</span><br>  
                         @else

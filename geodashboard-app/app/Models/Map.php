@@ -60,4 +60,9 @@ class Map extends Model
     // public function setGMetaAttribute($value){
     //     $this->attributes['g_meta'] =  gettype($value) == "string" ? collect(json_decode($value)) : $value;
     // }
+
+
+    public function groups(){
+        return Group::whereIn('id', $this->g_groups)->get();
+    }
 }

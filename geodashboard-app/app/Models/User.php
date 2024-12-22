@@ -23,6 +23,7 @@ class User extends Authenticatable implements FilamentUser
      */
     protected $fillable = [
         'name',
+        'g_groups',
         'email',
         'status',
         'is_superadmin',
@@ -50,6 +51,7 @@ class User extends Authenticatable implements FilamentUser
     protected function casts(): array
     {
         return [
+            'g_groups' => 'array',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
@@ -62,5 +64,9 @@ class User extends Authenticatable implements FilamentUser
         }
         // return str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
         return false;
+    }
+
+    public function groups(){
+        return Group::whereIn('id', $this->g_groups)->get();
     }
 }
