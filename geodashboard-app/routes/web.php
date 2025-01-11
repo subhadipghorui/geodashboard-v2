@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\v1\MapController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MVTController;
 use App\Http\Controllers\ReverseProxyController;
@@ -9,8 +10,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('app.index');
 Auth::routes(['register' => false]);
+
+// Social Login
+Route::get('auth/login/google', [LoginController::class, 'redirectToProvider'])->name('app.auth.google');
+Route::get('auth/login/google/callback', [LoginController::class, 'handleProviderCallback']);
+
 Route::get('/layers', function () {
     return response()->json(Layer::all());
 });
