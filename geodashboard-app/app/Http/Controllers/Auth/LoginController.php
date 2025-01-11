@@ -72,7 +72,7 @@ class LoginController extends Controller
             $newUser->email = $user->email;
             $newUser->name = $user->name;
             $newUser->email_verified_at = Date::now();
-            $newUser->g_group = ["1"];
+            $newUser->g_groups = ["1"];
             $newUser->password = bcrypt(uniqid().uniqid()); 
             $newUser->save();
 
