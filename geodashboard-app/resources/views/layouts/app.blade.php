@@ -126,7 +126,7 @@
 
     <footer>
         <div class="d-flex justify-content-between">
-            <div class="flex-3">Copyright <a class="text-light" href="https://cityplanner.biz">City Planner</a> © <script>document.write((new Date()).getFullYear())</script></div>
+            <div class="flex-3">Copyright <a class="text-light" href="https://geodashboard.myiotlab.in/">Geodashboard V2</a> © <script>document.write((new Date()).getFullYear())</script></div>
 
             <div class="flex-2"></div>
         </div>
