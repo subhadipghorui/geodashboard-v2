@@ -11,9 +11,12 @@ class DashboardController extends Controller
         $authUser = auth()->user();
         $data['maps'] = Map::where('status', 1)
         ->where(function($query) use($authUser) {
-            foreach ($authUser->g_groups as $value) {
-                $query->orWhereJsonContains('g_groups', $value);
+                if($authUser->g_groups){
+                    foreach ($authUser->g_groups as $value) {
+                    $query->orWhereJsonContains('g_groups', $value);
+                }
             }
+           
         })->get();
         return view('dashboard.index', compact('data'));
     }

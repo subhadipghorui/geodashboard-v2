@@ -29,7 +29,7 @@ const renderLegend = (legendConfig) => {
             if (e.symbol.type == "color") {
                 legendHtml += `<div style="background-color:${e.symbol.value};width: 24px; height:24px;  margin-right: 16px;"></div>`;
             } else {
-                legendHtml += `<div style="margin-right: 16px;"><img src="${e.symbol.value}" alt="${e.label}" width="24px"/></div>`;
+                legendHtml += `<div style="margin-right: 16px;"><img src="${e.symbol.value}" alt="${e.label}" width="${e?.width || ``}" height="${e?.height || ``}"/></div>`;
             }
             legendHtml += `<div>${e.label}</div>`;
             legendHtml += `</div>`;
