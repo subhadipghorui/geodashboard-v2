@@ -272,7 +272,7 @@ const addOnClickPopup = (layersArray = []) => {
                 attributesTableBody += `</tr>`;
             });
 
-            $(`#popup-modal-table-${feature.layer.id}`).append(
+           $(`[id="popup-modal-table-${feature.layer.id}"]`).append(
                 attributesTableBody
             );
 
